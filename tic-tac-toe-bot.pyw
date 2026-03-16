@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# ===== Tic-Tac-Toe mit unschlagbarer KI – GUI mit abgerundeten Ecken =====
+# ===== Tic-Tac-Toe mit unschlagbarer KI – GUI mit abgerundeten Ecken und weißem Hintergrund =====
 # Basierend auf der Minimax-Implementierung von Clederson Cruz.
-# Das Fenster hat abgerundete Ecken, eine eigene Titelleiste und ist verschiebbar.
+# Fenster mit abgerundeten Ecken, weiße Hintergrundfarbe, schwarzer Text.
 # Du kannst wählen, ob du X oder O sein möchtest und wer beginnt.
 
 import sys
@@ -34,20 +34,20 @@ def _create_round_rect(self, x1, y1, x2, y2, r=25, **kwargs):
 tk.Canvas.create_round_rect = _create_round_rect
 
 # ------------------------------------------------------------
-# Custom Fensterklasse mit abgerundeten Ecken und Titelleiste
+# Custom Fensterklasse mit abgerundeten Ecken und Titelleiste (weißer Hintergrund)
 # ------------------------------------------------------------
 class RoundWindow:
-    def __init__(self, width, height, title, bg_color="#2b2b2b", title_color="#ffffff"):
+    def __init__(self, width, height, title, bg_color="#ffffff", title_color="#000000"):
         self.root = tk.Toplevel() if tk._default_root else tk.Tk()
         self.root.overrideredirect(True)
-        # self.root.attributes("-topmost", True)   # optional, kann aktiviert werden
+        # self.root.attributes("-topmost", True)   # optional
         self.root.geometry(f"{width}x{height}+300+200")
         self.root.configure(bg=bg_color)
         
         # Canvas für Hintergrund mit abgerundeten Ecken
         self.canvas = tk.Canvas(self.root, width=width, height=height, bg=bg_color, highlightthickness=0)
         self.canvas.pack()
-        self.canvas.create_round_rect(5, 5, width-5, height-5, r=20, fill=bg_color, outline="#4a4a4a", width=2)
+        self.canvas.create_round_rect(5, 5, width-5, height-5, r=20, fill=bg_color, outline="#cccccc", width=2)
         
         # Eigene Titelleiste
         title_bar = tk.Frame(self.root, bg=bg_color, height=30)
@@ -58,8 +58,8 @@ class RoundWindow:
         title_label.pack(side="left", padx=10)
         
         close_btn = tk.Button(title_bar, text="✕", font=("Segoe UI", 10, "bold"),
-                              fg=title_color, bg=bg_color, bd=0, activebackground="#c42b1c",
-                              activeforeground="white", cursor="hand2",
+                              fg=title_color, bg=bg_color, bd=0, activebackground="#ffcccc",
+                              activeforeground="black", cursor="hand2",
                               command=self.root.destroy)
         close_btn.pack(side="right", padx=10)
         
@@ -83,18 +83,14 @@ class RoundWindow:
         self.root.geometry(f"+{x}+{y}")
 
 # ------------------------------------------------------------
-# Hauptspielklasse (angepasst an Minimax-Logik mit -1,0,1)
+# Hauptspielklasse
 # ------------------------------------------------------------
 class TicTacToeGUI:
     def __init__(self, player_symbol, player_starts):
-        """
-        player_symbol: 'X' oder 'O'
-        player_starts: True (Spieler beginnt) oder False (KI beginnt)
-        """
         self.player_symbol = player_symbol
         self.player_starts = player_starts
         
-        # Spieler-Kodierung: HUMAN = -1, COMP = +1 (wie im Konsolenskript)
+        # Symbolzuordnung: HUMAN = -1, COMP = +1
         if player_symbol == 'X':
             self.HUMAN = -1
             self.COMP = +1
@@ -103,38 +99,34 @@ class TicTacToeGUI:
         else:
             self.HUMAN = -1
             self.COMP = +1
-            # Aber der Spieler hat O, Computer X – dann müssen wir die Rollen tauschen
-            # Im Konsolenskript ist HUMAN immer -1, COMP +1, aber die Symbole sind variabel.
-            # Das ist einfach: Wir lassen die Kodierung gleich, aber tauschen die Zuordnung.
-            self.HUMAN = -1
-            self.COMP = +1
             self.human_char = 'O'
             self.comp_char = 'X'
         
-        # Board: 3x3 Liste mit 0 = leer, -1 = HUMAN, +1 = COMP
+        # Board: 0 = leer, -1 = HUMAN, +1 = COMP
         self.board = [[0, 0, 0] for _ in range(3)]
         
-        # Abgerundetes Fenster erstellen
-        self.win = RoundWindow(350, 400, f"Tic-Tac-Toe – Du spielst {self.player_symbol}")
+        # Fenster erstellen
+        self.win = RoundWindow(350, 400, f"Tic-Tac-Toe – Du spielst {self.player_symbol}",
+                               bg_color="#ffffff", title_color="#000000")
         self.root = self.win.root
         self.inner = self.win.inner_frame
         
-        # Buttons für das Spielfeld
+        # Spielfeld-Buttons
         self.buttons = []
         for i in range(3):
             row = []
             for j in range(3):
                 btn = tk.Button(self.inner, text=" ", font=("Helvetica", 20, "bold"),
                                 width=3, height=1, command=lambda r=i, c=j: self.player_move(r, c),
-                                bg="#3c3f41", fg="white", bd=1, relief="solid",
-                                activebackground="#4a4a4a", activeforeground="white")
+                                bg="#f0f0f0", fg="black", bd=1, relief="solid",
+                                activebackground="#e0e0e0", activeforeground="black")
                 btn.grid(row=i, column=j, padx=5, pady=5)
                 row.append(btn)
             self.buttons.append(row)
         
         # Statusleiste
         self.status_label = tk.Label(self.inner, text="", font=("Segoe UI", 10),
-                                      fg="white", bg=self.inner.cget('bg'))
+                                      fg="black", bg=self.inner.cget('bg'))
         self.status_label.grid(row=3, column=0, columnspan=3, pady=5)
         
         # Neustart-Button
@@ -143,33 +135,24 @@ class TicTacToeGUI:
                                 bd=0, padx=10, pady=2, cursor="hand2")
         restart_btn.grid(row=4, column=0, columnspan=3, pady=5)
         
-        # Spielstart: Wenn der Computer beginnt, macht er den ersten Zug
         self.game_over = False
         self.update_status()
         
         if not self.player_starts:
             self.root.after(500, self.computer_move)
     
-    # ------------------------------------------------------------
-    # Hilfsfunktionen für das Spiel
-    # ------------------------------------------------------------
     def update_status(self):
         if self.game_over:
             return
-        # Prüfen, wer dran ist: Wenn Anzahl der Züge von HUMAN und COMP gleich sind,
-        # ist der Spieler dran, der begonnen hat. Wir können einfach zählen, wie viele
-        # HUMAN-Züge und COMP-Züge gemacht wurden.
         moves_human = sum(row.count(self.HUMAN) for row in self.board)
         moves_comp = sum(row.count(self.COMP) for row in self.board)
         
         if moves_human == moves_comp:
-            # Gleich viele Züge: Der Spieler, der begonnen hat, ist dran
             if self.player_starts:
                 self.status_label.config(text=f"Du bist dran ({self.human_char})")
             else:
                 self.status_label.config(text=f"KI denkt... ({self.comp_char})")
         else:
-            # Ungleiche Züge: Der andere ist dran
             if self.player_starts:
                 self.status_label.config(text=f"KI denkt... ({self.comp_char})")
             else:
@@ -179,25 +162,22 @@ class TicTacToeGUI:
         if self.game_over:
             return
         
-        # Prüfen, ob Spieler am Zug ist
         moves_human = sum(row.count(self.HUMAN) for row in self.board)
         moves_comp = sum(row.count(self.COMP) for row in self.board)
         
         if self.player_starts:
             if moves_human != moves_comp:
-                return  # Nicht Spielers Zug
+                return
         else:
             if moves_human == moves_comp:
-                return  # Nicht Spielers Zug (Computer ist dran)
+                return
         
         if self.board[row][col] != 0:
-            return  # Feld bereits belegt
+            return
         
-        # Zug ausführen
         self.board[row][col] = self.HUMAN
         self.buttons[row][col].config(text=self.human_char, state="disabled")
         
-        # Prüfen auf Sieg oder Unentschieden
         if self.wins(self.board, self.HUMAN):
             self.game_over = True
             messagebox.showinfo("Spielende", "Du hast gewonnen! 😮")
@@ -206,7 +186,6 @@ class TicTacToeGUI:
             self.game_over = True
             messagebox.showinfo("Spielende", "Unentschieden!")
         else:
-            # Computer ist dran
             self.update_status()
             self.root.after(100, self.computer_move)
     
@@ -214,22 +193,20 @@ class TicTacToeGUI:
         if self.game_over:
             return
         
-        # Prüfen, ob Computer am Zug ist
         moves_human = sum(row.count(self.HUMAN) for row in self.board)
         moves_comp = sum(row.count(self.COMP) for row in self.board)
         
         if self.player_starts:
             if moves_human == moves_comp:
-                return  # Nicht Computers Zug
+                return
         else:
             if moves_human != moves_comp:
-                return  # Nicht Computers Zug
+                return
         
         depth = len(self.empty_cells())
         if depth == 0:
             return
         
-        # Wenn das Board leer ist (depth == 9), wähle zufälligen Zug (wie im Konsolenskript)
         if depth == 9:
             x, y = choice([(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)])
         else:
@@ -239,7 +216,6 @@ class TicTacToeGUI:
         self.board[x][y] = self.COMP
         self.buttons[x][y].config(text=self.comp_char, state="disabled")
         
-        # Prüfen auf Sieg oder Unentschieden
         if self.wins(self.board, self.COMP):
             self.game_over = True
             messagebox.showinfo("Spielende", "KI hat gewonnen! 🤖")
@@ -250,13 +226,8 @@ class TicTacToeGUI:
         else:
             self.update_status()
     
-    # ------------------------------------------------------------
-    # Minimax-Implementierung (angepasst aus dem Konsolenskript)
-    # ------------------------------------------------------------
+    # Minimax-Implementierung
     def wins(self, state, player):
-        """
-        Prüft, ob der Spieler (player = -1 oder +1) gewonnen hat.
-        """
         win_state = [
             [state[0][0], state[0][1], state[0][2]],
             [state[1][0], state[1][1], state[1][2]],
@@ -280,6 +251,14 @@ class TicTacToeGUI:
                     cells.append([i, j])
         return cells
     
+    def empty_cells_from_state(self, state):
+        cells = []
+        for i in range(3):
+            for j in range(3):
+                if state[i][j] == 0:
+                    cells.append([i, j])
+        return cells
+    
     def evaluate(self, state):
         if self.wins(state, self.COMP):
             return +1
@@ -289,10 +268,6 @@ class TicTacToeGUI:
             return 0
     
     def minimax(self, state, depth, player):
-        """
-        player: +1 für Computer, -1 für Mensch
-        Rückgabe: Liste [beste_row, beste_col, bester_score]
-        """
         if player == self.COMP:
             best = [-1, -1, -infinity]
         else:
@@ -318,17 +293,6 @@ class TicTacToeGUI:
         
         return best
     
-    def empty_cells_from_state(self, state):
-        cells = []
-        for i in range(3):
-            for j in range(3):
-                if state[i][j] == 0:
-                    cells.append([i, j])
-        return cells
-    
-    # ------------------------------------------------------------
-    # Hilfsfunktionen für die GUI
-    # ------------------------------------------------------------
     def is_board_full(self):
         return all(self.board[i][j] != 0 for i, j in itertools.product(range(3), range(3)))
     
@@ -341,50 +305,50 @@ class TicTacToeGUI:
         start_dialog()
 
 # ------------------------------------------------------------
-# Startdialog mit abgerundeten Ecken
+# Startdialog (weißer Hintergrund)
 # ------------------------------------------------------------
 def start_dialog():
-    win = RoundWindow(400, 250, "Tic-Tac-Toe – Einstellungen")
+    win = RoundWindow(400, 250, "Tic-Tac-Toe – Einstellungen",
+                      bg_color="#ffffff", title_color="#000000")
     root = win.root
     inner = win.inner_frame
     
-    # Überschrift
     tk.Label(inner, text="Wähle dein Symbol und wer beginnt", font=("Segoe UI", 11),
-             fg="white", bg=inner.cget('bg')).pack(pady=10)
+             fg="black", bg=inner.cget('bg')).pack(pady=10)
     
-    # Frame für Symbolauswahl
+    # Symbolauswahl
     sym_frame = tk.Frame(inner, bg=inner.cget('bg'))
     sym_frame.pack(pady=5)
-    tk.Label(sym_frame, text="Symbol:", font=("Segoe UI", 10), fg="white", bg=inner.cget('bg')).pack(side="left", padx=5)
+    tk.Label(sym_frame, text="Symbol:", font=("Segoe UI", 10), fg="black", bg=inner.cget('bg')).pack(side="left", padx=5)
     
     symbol_var = tk.StringVar(value="X")
     rb_x = tk.Radiobutton(sym_frame, text="X", variable=symbol_var, value="X",
-                          bg=inner.cget('bg'), fg="white", selectcolor="#2b2b2b",
-                          activebackground="#4a4a4a", activeforeground="white")
+                          bg=inner.cget('bg'), fg="black", selectcolor="white",
+                          activebackground="#e0e0e0", activeforeground="black")
     rb_x.pack(side="left", padx=5)
     rb_o = tk.Radiobutton(sym_frame, text="O", variable=symbol_var, value="O",
-                          bg=inner.cget('bg'), fg="white", selectcolor="#2b2b2b",
-                          activebackground="#4a4a4a", activeforeground="white")
+                          bg=inner.cget('bg'), fg="black", selectcolor="white",
+                          activebackground="#e0e0e0", activeforeground="black")
     rb_o.pack(side="left", padx=5)
     
-    # Frame für Startspieler
+    # Startspieler
     start_frame = tk.Frame(inner, bg=inner.cget('bg'))
     start_frame.pack(pady=5)
-    tk.Label(start_frame, text="Beginnt:", font=("Segoe UI", 10), fg="white", bg=inner.cget('bg')).pack(side="left", padx=5)
+    tk.Label(start_frame, text="Beginnt:", font=("Segoe UI", 10), fg="black", bg=inner.cget('bg')).pack(side="left", padx=5)
     
     start_var = tk.StringVar(value="player")
     rb_player = tk.Radiobutton(start_frame, text="Du", variable=start_var, value="player",
-                               bg=inner.cget('bg'), fg="white", selectcolor="#2b2b2b",
-                               activebackground="#4a4a4a", activeforeground="white")
+                               bg=inner.cget('bg'), fg="black", selectcolor="white",
+                               activebackground="#e0e0e0", activeforeground="black")
     rb_player.pack(side="left", padx=5)
     rb_ai = tk.Radiobutton(start_frame, text="KI", variable=start_var, value="ai",
-                           bg=inner.cget('bg'), fg="white", selectcolor="#2b2b2b",
-                           activebackground="#4a4a4a", activeforeground="white")
+                           bg=inner.cget('bg'), fg="black", selectcolor="white",
+                           activebackground="#e0e0e0", activeforeground="black")
     rb_ai.pack(side="left", padx=5)
     
     # Info-Text
     info_text = "Hinweis: Wählst du O, spielt die KI mit X.\nWählst du X, spielt die KI mit O."
-    tk.Label(inner, text=info_text, font=("Segoe UI", 8), fg="#aaaaaa", bg=inner.cget('bg')).pack(pady=10)
+    tk.Label(inner, text=info_text, font=("Segoe UI", 8), fg="#555555", bg=inner.cget('bg')).pack(pady=10)
     
     def start_game():
         symbol = symbol_var.get()
@@ -392,6 +356,7 @@ def start_dialog():
         root.destroy()
         TicTacToeGUI(symbol, starts)
     
+    # Start-Button (jetzt sichtbar)
     tk.Button(inner, text="Spiel starten", font=("Segoe UI", 11, "bold"),
               command=start_game, bg="#4CAF50", fg="white",
               bd=0, padx=20, pady=5, cursor="hand2").pack(pady=10)
