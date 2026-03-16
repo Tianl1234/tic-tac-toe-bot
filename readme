@@ -1,0 +1,88 @@
+# 🎮 Tic‑Tac‑Toe with Unbeatable AI (GUI Version)
+
+A classic Tic‑Tac‑Toe game with a sleek graphical user interface built with Python’s `tkinter`.  
+The AI uses the **Minimax algorithm** and is **unbeatable** – you can only draw if you play perfectly.
+
+---
+
+## ✨ Features
+
+- **Choose your symbol** – play as **X** (starts) or **O** (second).  
+- **Choose who begins** – you or the AI.  
+- **Unbeatable AI** – based on the classic Minimax algorithm; the AI never loses.  
+- **Modern, rounded‑corner windows** – both the start dialog and the game window have smoothly rounded corners.  
+- **Clean white background** with black text for a fresh, readable look.  
+- **Drag‑anywhere** – click and hold the title bar to move the window.  
+- **Restart button** – easily start a new game (returns to the start dialog).  
+- **No console window** – when saved as `.pyw`, the script runs silently in the background.
+
+---
+
+## 📦 Requirements
+
+- **Python 3.6 or higher** (tested with Python 3.10–3.13).  
+- **tkinter** – usually included with Python on Windows, macOS, and most Linux distributions.  
+- **No additional libraries** – the script uses only the standard library.
+
+---
+
+## 🚀 How to Run
+
+1. **Save the script** with the extension **`.pyw`** (e.g. `tictactoe.pyw`).  
+   - The `.pyw` extension prevents a console window from appearing.  
+2. **Double‑click** the file – the start dialog opens.  
+3. Select your preferred symbol and who should start, then click **“Spiel starten”** (Start game).  
+4. Play by clicking any empty cell. The AI responds instantly.  
+5. After the game, click **“Neustart”** (Restart) to return to the start dialog and play again.  
+
+> 💡 If you save the script as `.py` instead, a console window will stay open – useful for debugging or seeing any error messages.
+
+---
+
+## 🎮 How to Play
+
+- The game board is a 3×3 grid.  
+- Players take turns placing their symbol in an empty cell.  
+- The first player to get **three of their symbols in a row** (horizontally, vertically, or diagonally) wins.  
+- If all nine cells are filled without a winner, the game ends in a draw.
+
+---
+
+## 🧠 The AI – Minimax Algorithm
+
+The AI uses the **Minimax algorithm**, a recursive decision‑making algorithm for two‑player zero‑sum games:
+
+- It explores **all possible future moves** up to the end of the game.  
+- It assumes the opponent (you) will always choose the **best move for themselves**.  
+- It assigns a score to each outcome:  
+  - **+1** if the AI wins  
+  - **-1** if the human wins  
+  - **0** for a draw  
+- Scores are adjusted by the depth of the move (quicker wins are preferred, later losses are better).  
+- The AI then picks the move that **maximises its score** under the opponent’s optimal play.
+
+Because Minimax exhaustively evaluates every possible game state, the AI is **perfect** – it will never lose. The best you can achieve is a draw if you also play optimally.
+
+---
+
+## 🛠️ Troubleshooting
+
+| Problem | Solution |
+|--------|----------|
+| **Nothing happens when I double‑click the `.pyw` file** | Run the script as `.py` to see error messages. Common issues: Python not installed, or missing `tkinter`. |
+| **The start button is not visible** | The window height was increased to guarantee space. If you still have problems, manually edit `RoundWindow(400, 300, ...)` to a larger height (e.g. 350). |
+| **The AI seems slow** | Minimax for Tic‑Tac‑Toe is extremely fast. If you experience delays, check your CPU load – there might be an issue with your Python installation. |
+| **The window has no title bar** | The script uses a custom title bar for the rounded look. Drag the window by clicking the title text or the bar. |
+| **I want to play against a friend** | This version is AI‑only. For a two‑player mode, a separate script would be needed. |
+
+---
+
+## 📄 License
+
+This script is based on the Minimax implementation by **Clederson Cruz** (GPL licensed).  
+Modifications for the GUI, rounded windows, and user interaction are provided under the same **GNU General Public License (GPL)**.  
+Feel free to use, modify, and distribute it.
+
+---
+
+Enjoy the game – and try to beat the unbeatable AI! 🎉
